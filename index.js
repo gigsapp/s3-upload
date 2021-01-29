@@ -4,6 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const mime = require('mime-types');
 
+const s3 = new S3();
+const source = core.getInput('source');
+const dest = core.getInput('dest');
+const bucket = core.getInput('bucket');
+
 function walkSync(dir, filelist) {
   var files = fs.readdirSync(dir);
   filelist = filelist || [];
@@ -12,17 +17,12 @@ function walkSync(dir, filelist) {
     if (fs.statSync(path.join(dir, file)).isDirectory()) {
       filelist = walkSync(path.join(dir, file), filelist);
     } else {
-      filelist.push(path.join(dir, file));
+      filelist.push(path.join(dest, dir.replace(source, ''), file));
     }
   });
 
   return filelist;
 }
-
-const s3 = new S3();
-const source = core.getInput('source');
-const dest = core.getInput('dest');
-const bucket = core.getInput('bucket');
 
 Promise.all(
   walkSync(source).map((file) => {
@@ -33,7 +33,7 @@ Promise.all(
         Body: fs.createReadStream(file),
         Bucket: bucket,
         ContentType: fileType,
-        Key: `${dest}${file}`,
+        Key: file,
         ACL: 'private',
       })
       .promise();
