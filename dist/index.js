@@ -16,8 +16,6 @@ const source = core.getInput('source');
 let dest = core.getInput('dest');
 const bucket = core.getInput('bucket');
 
-dest = dest === '/' ? '' : dest;
-
 function walkSync(dir, filelist) {
   var files = fs.readdirSync(dir);
   filelist = filelist || [];
@@ -26,7 +24,7 @@ function walkSync(dir, filelist) {
     if (fs.statSync(path.join(dir, file)).isDirectory()) {
       filelist = walkSync(path.join(dir, file), filelist);
     } else {
-      filelist.push(path.join(dest, dir.replace(source, ''), file));
+      filelist.push(dir, file);
     }
   });
 
@@ -35,14 +33,17 @@ function walkSync(dir, filelist) {
 
 Promise.all(
   walkSync(source).map((file) => {
-    var fileType = mime.lookup(file) || 'application/octet-stream';
-
+    const fileType = mime.lookup(file) || 'application/octet-stream';
+    const key = `${dest === '/' ? '' : dest + '/'}${file.replace(
+      `${source}/`,
+      ''
+    )}`;
     return s3
       .upload({
-        Body: fs.createReadStream(path.join(source, file)),
+        Body: fs.createReadStream(file),
         Bucket: bucket,
         ContentType: fileType,
-        Key: file,
+        Key: key,
         ACL: 'private',
       })
       .promise();
