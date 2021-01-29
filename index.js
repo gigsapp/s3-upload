@@ -6,8 +6,10 @@ const mime = require('mime-types');
 
 const s3 = new S3();
 const source = core.getInput('source');
-const dest = core.getInput('dest');
+let dest = core.getInput('dest');
 const bucket = core.getInput('bucket');
+
+dest = dest === '/' ? '' : dest;
 
 function walkSync(dir, filelist) {
   var files = fs.readdirSync(dir);
