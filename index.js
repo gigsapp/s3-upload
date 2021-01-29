@@ -17,7 +17,7 @@ function walkSync(dir, filelist) {
     if (fs.statSync(path.join(dir, file)).isDirectory()) {
       filelist = walkSync(path.join(dir, file), filelist);
     } else {
-      filelist.push(dir, file);
+      filelist.push(path.join(dir, file));
     }
   });
 
@@ -43,7 +43,7 @@ Promise.all(
   })
 )
   .then((msg) => {
-    console.log(msg);
+    console.log(msg.key);
   })
   .catch((error) => {
     core.setFailed(error.message);
