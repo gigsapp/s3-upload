@@ -1,0 +1,27 @@
+{
+  "name": "s3-upload",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build index.js --license LICENSE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gigsapp/s3-upload.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gigsapp/s3-upload/issues"
+  },
+  "homepage": "https://github.com/gigsapp/s3-upload#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@vercel/ncc": "^0.27.0",
+    "aws-sdk": "^2.833.0",
+    "install": "^0.13.0",
+    "npm": "^6.14.11"
+  }
+}
