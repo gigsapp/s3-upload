@@ -32,7 +32,7 @@ Promise.all(
 
     return s3
       .upload({
-        Body: fs.createReadStream(file),
+        Body: fs.createReadStream(path.join(source, file)),
         Bucket: bucket,
         ContentType: fileType,
         Key: file,
